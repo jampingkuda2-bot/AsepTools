@@ -1,0 +1,9 @@
+{
+  "name": "toolkit-web",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "axios": "^1.7.4",
+    "ffmpeg-static": "^5.2.0"
+  }
+}
