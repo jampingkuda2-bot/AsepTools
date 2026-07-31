@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Toolkit — Multi Tools</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="blob blob-a" aria-hidden="true"></div>
+  <div class="blob blob-b" aria-hidden="true"></div>
+  <div class="blob blob-c" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <main class="wrap">
+
+    <!-- ============ AUTH SCREEN ============ -->
+    <section id="authScreen" class="auth-screen">
+      <header class="top">
+        <h1>Toolkit</h1>
+        <p class="tagline">Masuk dulu buat mulai pakai semua tools.</p>
+      </header>
+
+      <div class="segmented" id="authSegmented" role="tablist">
+        <div class="segmented-pill" id="authSegPill" aria-hidden="true"></div>
+        <button class="seg-btn active" data-authmode="login" role="tab" aria-selected="true">Masuk</button>
+        <button class="seg-btn" data-authmode="register" role="tab" aria-selected="false">Daftar</button>
+      </div>
+
+      <section class="card auth-card">
+        <form id="authForm">
+          <div class="field-group" id="authNameField" hidden>
+            <label class="opt-label">Nama</label>
+            <input type="text" id="authName" class="text-input" placeholder="Nama kamu" autocomplete="name" />
+          </div>
+          <div class="field-group">
+            <label class="opt-label">Email</label>
+            <input type="email" id="authEmail" class="text-input" placeholder="kamu@email.com" autocomplete="email" required />
+          </div>
+          <div class="field-group">
+            <label class="opt-label">Password</label>
+            <input type="password" id="authPassword" class="text-input" placeholder="Minimal 6 karakter" autocomplete="current-password" required minlength="6" />
+          </div>
+          <button type="submit" class="action-btn" id="authSubmitBtn">Masuk</button>
+        </form>
+
+        <div class="auth-divider"><span>atau</span></div>
+
+        <a class="oauth-btn oauth-google" href="/api/auth/google/start">
+          <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.9c1.7-1.57 2.7-3.88 2.7-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.8.54-1.84.86-3.06.86-2.35 0-4.34-1.59-5.05-3.72H.98v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.95 10.7A5.4 5.4 0 0 1 3.66 9c0-.59.1-1.17.29-1.7V4.97H.98A9 9 0 0 0 0 9c0 1.45.35 2.83.98 4.03l2.97-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.51.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .98 4.97L3.95 7.3C4.66 5.17 6.65 3.58 9 3.58z"/></svg>
+          <span>Lanjutkan dengan Google</span>
+        </a>
+
+        <p class="status-line" id="authStatusLine"></p>
+      </section>
+    </section>
+
+    <!-- ============ HOME SCREEN ============ -->
+    <section id="homeScreen" class="screen" hidden>
+      <div class="user-bar" id="userBar" hidden>
+        <span class="user-avatar" id="userAvatar">?</span>
+        <span class="user-name" id="userName">—</span>
+        <button class="text-btn" id="logoutBtn">Keluar</button>
+      </div>
+      <header class="top">
+        <h1>Toolkit</h1>
+        <p class="tagline">Semua tools dalam satu tempat. Ketuk buat mulai.</p>
+      </header>
+
+      <div class="app-grid">
+        <button class="app-icon" data-target="tool-tiktok">
+          <span class="icon-tile icon-tiktok">🎵</span>
+          <span class="icon-label">TikTok DL</span>
+        </button>
+        <button class="app-icon" data-target="tool-compress">
+          <span class="icon-tile icon-compress">🗜️</span>
+          <span class="icon-label">Kompres &amp; Konversi</span>
+        </button>
+        <button class="app-icon" data-target="tool-resize">
+          <span class="icon-tile icon-resize">📐</span>
+          <span class="icon-label">Resize Gambar</span>
+        </button>
+        <button class="app-icon" data-target="tool-qrcode">
+          <span class="icon-tile icon-qrcode">▦</span>
+          <span class="icon-label">QR Code</span>
+        </button>
+        <button class="app-icon" data-target="tool-upload">
+          <span class="icon-tile icon-upload">🔗</span>
+          <span class="icon-label">Foto/Video ke Link</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ============ TOOL: TIKTOK DOWNLOADER ============ -->
+    <section id="tool-tiktok" class="screen tool-screen" hidden>
+      <header class="tool-nav">
+        <button class="back-btn" data-back aria-label="Kembali">‹</button>
+        <span class="tool-nav-title">TikTok Downloader</span>
+      </header>
+
+      <p class="tool-desc">Tempel link TikTok, ambil MP4 tanpa watermark atau MP3-nya aja.</p>
+
+      <form id="ttForm" class="deck">
+        <input id="ttUrlInput" class="url-input" type="url" inputmode="url"
+          placeholder="https://www.tiktok.com/@user/video/xxxxxxxxxxxxx" autocomplete="off" required />
+        <button type="submit" class="btn-fetch" id="ttFetchBtn"><span>ANALISIS</span></button>
+      </form>
+
+      <p class="status-line" id="ttStatusLine">Tempel link lalu tekan ANALISIS</p>
+
+      <div class="card preview-card" id="ttPreview" hidden>
+        <div class="preview-thumb">
+          <img id="ttCover" alt="Cover video" />
+          <span class="preview-duration" id="ttDuration">00:00</span>
+        </div>
+        <div class="preview-info">
+          <p class="preview-eyebrow">SEKARANG DIPUTAR</p>
+          <h2 id="ttTitle">—</h2>
+          <p class="preview-author" id="ttAuthor">@—</p>
+          <div class="download-row">
+            <a class="btn-dl btn-dl-a" id="ttDlMp4" href="#"><span class="dl-label">MP4</span><span class="dl-sub">video, no watermark</span></a>
+            <a class="btn-dl btn-dl-b" id="ttDlMp3" href="#"><span class="dl-label">MP3</span><span class="dl-sub">audio saja</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TOOL: KOMPRES & KONVERSI ============ -->
+    <section id="tool-compress" class="screen tool-screen" hidden>
+      <header class="tool-nav">
+        <button class="back-btn" data-back aria-label="Kembali">‹</button>
+        <span class="tool-nav-title">Kompres &amp; Konversi</span>
+      </header>
+
+      <p class="tool-desc">Gambar, video, audio — diproses langsung di browser kamu, gak diupload ke mana pun.</p>
+
+      <div class="segmented" id="cSegmented" role="tablist">
+        <div class="segmented-pill" id="cSegPill" aria-hidden="true"></div>
+        <button class="seg-btn active" data-mode="compress" role="tab" aria-selected="true">Kompres</button>
+        <button class="seg-btn" data-mode="convert" role="tab" aria-selected="false">Konversi</button>
+      </div>
+
+      <section class="card drop-card" id="cDropCard">
+        <input type="file" id="cFileInput" hidden />
+        <div class="drop-inner">
+          <div class="drop-icon" aria-hidden="true">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0-12 4.5 4.5M12 3 7.5 7.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 16v2.5A2.5 2.5 0 0 0 6.5 21h11a2.5 2.5 0 0 0 2.5-2.5V16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </div>
+          <p class="drop-title">Taruh file di sini, atau ketuk buat pilih</p>
+          <p class="drop-sub">Gambar (JPG, PNG, WEBP) · Video (MP4, MOV, WEBM) · Audio (MP3, WAV, M4A)</p>
+        </div>
+      </section>
+
+      <section class="card options-card" id="cOptionsCard" hidden>
+        <div class="file-chip" id="cFileChip">
+          <span class="file-name" id="cFileName">—</span>
+          <span class="file-meta" id="cFileMeta">—</span>
+          <button class="chip-x" id="cClearFile" aria-label="Hapus file">✕</button>
+        </div>
+
+        <div id="cCompressOptions" class="options-block">
+          <label class="opt-label">Tingkat kompresi</label>
+          <div class="ios-slider-row">
+            <span class="opt-hint">Kecil</span>
+            <input type="range" id="cQualityRange" min="1" max="100" value="70" class="ios-slider" />
+            <span class="opt-hint">Bagus</span>
+          </div>
+          <p class="opt-value-line">Kualitas: <span id="cQualityValue">70</span>%</p>
+        </div>
+
+        <div id="cConvertOptions" class="options-block" hidden>
+          <label class="opt-label">Konversi ke format</label>
+          <div class="format-grid" id="cFormatGrid"></div>
+        </div>
+
+        <button class="action-btn" id="cProcessBtn">Proses</button>
+      </section>
+
+      <section class="card progress-card" id="cProgressCard" hidden>
+        <div class="ring-wrap">
+          <svg width="88" height="88" viewBox="0 0 88 88" class="ring-svg">
+            <circle cx="44" cy="44" r="38" class="ring-bg" />
+            <circle cx="44" cy="44" r="38" class="ring-fg" id="cRingFg" />
+          </svg>
+          <span class="ring-percent" id="cRingPercent">0%</span>
+        </div>
+        <p class="progress-label" id="cProgressLabel">Menyiapkan mesin proses...</p>
+      </section>
+
+      <section class="card result-card" id="cResultCard" hidden>
+        <div class="result-icon">✓</div>
+        <p class="result-title">Selesai!</p>
+        <div class="result-sizes">
+          <div class="size-box"><span class="size-label">Sebelum</span><span class="size-val" id="cSizeBefore">—</span></div>
+          <div class="size-arrow">→</div>
+          <div class="size-box"><span class="size-label">Sesudah</span><span class="size-val" id="cSizeAfter">—</span></div>
+        </div>
+        <p class="result-savings" id="cResultSavings"></p>
+        <a class="action-btn download-btn" id="cDownloadBtn" href="#" download>Download File</a>
+        <button class="text-btn" id="cResetBtn">Proses file lain</button>
+      </section>
+
+      <p class="status-line" id="cStatusLine"></p>
+    </section>
+
+    <!-- ============ TOOL: RESIZE GAMBAR ============ -->
+    <section id="tool-resize" class="screen tool-screen" hidden>
+      <header class="tool-nav">
+        <button class="back-btn" data-back aria-label="Kembali">‹</button>
+        <span class="tool-nav-title">Resize Gambar</span>
+      </header>
+
+      <p class="tool-desc">Ubah ukuran (dimensi) gambar, atau kecilin persentasenya. Diproses di browser kamu.</p>
+
+      <section class="card drop-card" id="rDropCard">
+        <input type="file" id="rFileInput" accept="image/*" hidden />
+        <div class="drop-inner">
+          <div class="drop-icon" aria-hidden="true">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0-12 4.5 4.5M12 3 7.5 7.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 16v2.5A2.5 2.5 0 0 0 6.5 21h11a2.5 2.5 0 0 0 2.5-2.5V16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </div>
+          <p class="drop-title">Taruh gambar di sini, atau ketuk buat pilih</p>
+          <p class="drop-sub">JPG, PNG, WEBP, GIF</p>
+        </div>
+      </section>
+
+      <section class="card options-card" id="rOptionsCard" hidden>
+        <div class="file-chip" id="rFileChip">
+          <span class="file-name" id="rFileName">—</span>
+          <span class="file-meta" id="rFileMeta">—</span>
+          <button class="chip-x" id="rClearFile" aria-label="Hapus file">✕</button>
+        </div>
+
+        <div class="segmented" id="rSegmented" role="tablist">
+          <div class="segmented-pill" id="rSegPill" aria-hidden="true"></div>
+          <button class="seg-btn active" data-rmode="percent" role="tab" aria-selected="true">Persentase</button>
+          <button class="seg-btn" data-rmode="exact" role="tab" aria-selected="false">Ukuran Pas</button>
+        </div>
+
+        <div id="rPercentOptions" class="options-block">
+          <label class="opt-label">Skala</label>
+          <div class="ios-slider-row">
+            <span class="opt-hint">10%</span>
+            <input type="range" id="rPercentRange" min="10" max="100" value="50" class="ios-slider" />
+            <span class="opt-hint">100%</span>
+          </div>
+          <p class="opt-value-line" id="rPercentPreview">50% — —</p>
+        </div>
+
+        <div id="rExactOptions" class="options-block" hidden>
+          <label class="opt-label">Lebar × Tinggi (px)</label>
+          <div class="dim-row">
+            <input type="number" id="rWidthInput" class="dim-input" min="1" placeholder="Lebar" />
+            <span class="dim-x">×</span>
+            <input type="number" id="rHeightInput" class="dim-input" min="1" placeholder="Tinggi" />
+          </div>
+          <label class="lock-row">
+            <input type="checkbox" id="rLockRatio" checked />
+            <span>Kunci rasio aspek</span>
+          </label>
+        </div>
+
+        <button class="action-btn" id="rProcessBtn">Resize</button>
+      </section>
+
+      <section class="card result-card" id="rResultCard" hidden>
+        <div class="result-icon">✓</div>
+        <p class="result-title">Selesai!</p>
+        <div class="result-sizes">
+          <div class="size-box"><span class="size-label">Asli</span><span class="size-val" id="rDimBefore">—</span></div>
+          <div class="size-arrow">→</div>
+          <div class="size-box"><span class="size-label">Baru</span><span class="size-val" id="rDimAfter">—</span></div>
+        </div>
+        <a class="action-btn download-btn" id="rDownloadBtn" href="#" download>Download Gambar</a>
+        <button class="text-btn" id="rResetBtn">Resize gambar lain</button>
+      </section>
+
+      <p class="status-line" id="rStatusLine"></p>
+    </section>
+
+    <!-- ============ TOOL: QR CODE GENERATOR ============ -->
+    <section id="tool-qrcode" class="screen tool-screen" hidden>
+      <header class="tool-nav">
+        <button class="back-btn" data-back aria-label="Kembali">‹</button>
+        <span class="tool-nav-title">QR Code Generator</span>
+      </header>
+
+      <p class="tool-desc">Ketik teks atau link, langsung jadi QR code. Bisa didownload sebagai PNG.</p>
+
+      <section class="card qr-input-card">
+        <textarea id="qrTextInput" class="qr-textarea" rows="3" placeholder="https://contoh.com atau teks apa aja..."></textarea>
+
+        <label class="opt-label" style="margin-top: 18px;">Warna</label>
+        <div class="format-grid qr-color-grid" id="qrColorGrid"></div>
+
+        <button class="action-btn" id="qrGenerateBtn">Buat QR Code</button>
+      </section>
+
+      <section class="card qr-result-card" id="qrResultCard" hidden>
+        <div class="qr-canvas-wrap">
+          <canvas id="qrCanvas"></canvas>
+        </div>
+        <a class="action-btn download-btn" id="qrDownloadBtn" href="#" download="qrcode.png">Download PNG</a>
+      </section>
+
+      <p class="status-line" id="qrStatusLine"></p>
+    </section>
+
+    <!-- ============ TOOL: FOTO/VIDEO KE LINK ============ -->
+    <section id="tool-upload" class="screen tool-screen" hidden>
+      <header class="tool-nav">
+        <button class="back-btn" data-back aria-label="Kembali">‹</button>
+        <span class="tool-nav-title">Foto/Video ke Link</span>
+      </header>
+
+      <p class="tool-desc">Upload foto atau video, dapat link buat dibagikan. Siapa aja yang buka linknya bisa lihat langsung, gak perlu akun.</p>
+
+      <section class="card drop-card" id="uDropCard">
+        <input type="file" id="uFileInput" accept="image/*,video/*" hidden />
+        <div class="drop-inner">
+          <div class="drop-icon" aria-hidden="true">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0-12 4.5 4.5M12 3 7.5 7.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 16v2.5A2.5 2.5 0 0 0 6.5 21h11a2.5 2.5 0 0 0 2.5-2.5V16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </div>
+          <p class="drop-title">Taruh foto/video di sini, atau ketuk buat pilih</p>
+          <p class="drop-sub">Gambar atau video, maks 500MB</p>
+        </div>
+      </section>
+
+      <section class="card progress-card" id="uProgressCard" hidden>
+        <div class="ring-wrap">
+          <svg width="88" height="88" viewBox="0 0 88 88" class="ring-svg">
+            <circle cx="44" cy="44" r="38" class="ring-bg" />
+            <circle cx="44" cy="44" r="38" class="ring-fg" id="uRingFg" />
+          </svg>
+          <span class="ring-percent" id="uRingPercent">0%</span>
+        </div>
+        <p class="progress-label" id="uProgressLabel">Mengupload...</p>
+      </section>
+
+      <section class="card result-card" id="uResultCard" hidden>
+        <div class="result-icon">✓</div>
+        <p class="result-title">Link siap dibagikan!</p>
+        <div class="link-row">
+          <input type="text" id="uLinkOutput" class="text-input link-input" readonly />
+          <button class="copy-btn" id="uCopyBtn">Salin</button>
+        </div>
+        <button class="text-btn" id="uResetBtn">Upload file lain</button>
+      </section>
+
+      <p class="status-line" id="uStatusLine"></p>
+    </section>
+
+  </main>
+
+<script src="qrcode.min.js"></script>
+<script type="module" src="app.js"></script>
+</body>
+  </html>
+  
