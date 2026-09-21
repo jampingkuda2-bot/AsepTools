@@ -17,15 +17,13 @@ function toast(msg,dur=2200){
 }
 
 /* ================= CAPACITOR FILESYSTEM ================= */
-function getFS(){ return window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Filesystem; }
-const DIR_EXT = 'EXTERNAL_STORAGE';
-const ENC_UTF8 = 'utf8';
+const { Filesystem, Directory, Encoding } = Capacitor.Plugins;
 
 async function requestPermissions(){
   try{
-    const status = await getFS().checkPermissions();
+    const status = await Filesystem.checkPermissions();
     if(status.publicStorage !== 'granted'){
-      const req = await getFS().requestPermissions();
+      const req = await Filesystem.requestPermissions();
       if(req.publicStorage === 'granted'){
         toast('? Izin storage diberikan');
       }else{
@@ -52,9 +50,9 @@ async function loadDir(path){
   const list = document.getElementById('file-list');
   list.innerHTML = '<div class="loading"><div class="spinner"></div><br>Memuat...</div>';
   try{
-    const result = await getFS().readdir({
+    const result = await Filesystem.readdir({
       path: path,
-      directory: DIR_EXT
+      directory: Directory.ExternalStorage
     });
     currentPath = path;
     document.getElementById('current-path').value = path;
@@ -63,9 +61,9 @@ async function loadDir(path){
     for(const f of result.files){
       let size = 0, mtime = 0;
       try{
-        const stat = await getFS().stat({
+        const stat = await Filesystem.stat({
           path: path + '/' + f.name,
-          directory: DIR_EXT
+          directory: Directory.ExternalStorage
         });
         size = stat.size || 0;
         mtime = stat.mtime || 0;
@@ -193,10 +191,10 @@ async function renameItem(name, type){
   const newName = prompt('Nama baru:', name);
   if(!newName || newName === name) return;
   try{
-    await getFS().rename({
+    await Filesystem.rename({
       from: currentPath + '/' + name,
       to: currentPath + '/' + newName,
-      directory: DIR_EXT
+      directory: Directory.ExternalStorage
     });
     toast('? Berhasil di-rename');
     await loadDir(currentPath);
@@ -208,9 +206,9 @@ async function deleteItem(name, type){
   try{
     const path = currentPath + '/' + name;
     if(type === 'directory'){
-      await getFS().rmdir({ path, directory: DIR_EXT, recursive: true });
+      await Filesystem.rmdir({ path, directory: Directory.ExternalStorage, recursive: true });
     }else{
-      await getFS().deleteFile({ path, directory: DIR_EXT });
+      await Filesystem.deleteFile({ path, directory: Directory.ExternalStorage });
     }
     toast('?? Dihapus');
     await loadDir(currentPath);
@@ -219,9 +217,9 @@ async function deleteItem(name, type){
 
 async function showInfo(name){
   try{
-    const stat = await getFS().stat({
+    const stat = await Filesystem.stat({
       path: currentPath + '/' + name,
-      directory: DIR_EXT
+      directory: Directory.ExternalStorage
     });
     alert('Nama: '+name+'\nUkuran: '+formatSize(stat.size)+'\nTipe: '+stat.type+'\nTanggal: '+(stat.mtime ? new Date(stat.mtime).toLocaleString('id-ID') : '-')+'\nPath: '+stat.uri);
   }catch(e){ toast('? ' + e.message); }
@@ -238,9 +236,9 @@ async function createFolder(){
   const name = prompt('Nama folder baru:');
   if(!name) return;
   try{
-    await getFS().mkdir({
+    await Filesystem.mkdir({
       path: currentPath + '/' + name,
-      directory: DIR_EXT,
+      directory: Directory.ExternalStorage,
       recursive: true
     });
     toast('? Folder dibuat');
@@ -252,11 +250,11 @@ async function createTextFile(){
   const name = prompt('Nama file (contoh: catatan.txt):');
   if(!name) return;
   try{
-    await getFS().writeFile({
+    await Filesystem.writeFile({
       path: currentPath + '/' + name,
       data: '',
-      directory: DIR_EXT,
-      encoding: ENC_UTF8
+      directory: Directory.ExternalStorage,
+      encoding: Encoding.UTF8
     });
     toast('? File dibuat');
     await loadDir(currentPath);
@@ -287,10 +285,10 @@ async function loadFileContent(path){
   const area = document.getElementById('editor-area');
   area.value = 'Memuat...';
   try{
-    const res = await getFS().readFile({
+    const res = await Filesystem.readFile({
       path: path,
-      directory: DIR_EXT,
-      encoding: ENC_UTF8
+      directory: Directory.ExternalStorage,
+      encoding: Encoding.UTF8
     });
     area.value = typeof res.data === 'string' ? res.data : await res.data.text();
     updateLineNumbers();
@@ -314,11 +312,11 @@ async function saveTextFile(){
   }
 
   try{
-    await getFS().writeFile({
+    await Filesystem.writeFile({
       path: path,
       data: content,
-      directory: DIR_EXT,
-      encoding: ENC_UTF8
+      directory: Directory.ExternalStorage,
+      encoding: Encoding.UTF8
     });
     document.getElementById('editor-status').textContent = 'Tersimpan ?';
     toast('? Tersimpan');
@@ -391,9 +389,9 @@ async function openPdf(path, name){
   document.getElementById('pdf-title').textContent = name;
   document.getElementById('pdf-page-info').textContent = 'Memuat...';
   try{
-    const res = await getFS().readFile({
+    const res = await Filesystem.readFile({
       path: path,
-      directory: DIR_EXT
+      directory: Directory.ExternalStorage
     });
     let data;
     if(typeof res.data === 'string'){
@@ -465,8 +463,8 @@ async function loadPickerDir(path){
   const list = document.getElementById('picker-list');
   list.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
   try{
-    const res = await getFS().readdir({
-      path: path, directory: DIR_EXT
+    const res = await Filesystem.readdir({
+      path: path, directory: Directory.ExternalStorage
     });
     pickerPath = path;
     document.getElementById('picker-path').value = path;
@@ -523,8 +521,8 @@ function escapeAttr(s){ return String(s).replace(/'/g,"\\'"); }
 /* ================= INIT ================= */
 window.addEventListener('load', function(){
   updateLineNumbers();
-  if(getFS()){
-    getFS().checkPermissions().then(function(s){
+  if(Capacitor && Capacitor.Plugins && Capacitor.Plugins.Filesystem){
+    Capacitor.Plugins.Filesystem.checkPermissions().then(function(s){
       if(s.publicStorage !== 'granted'){
         toast('?? Izin storage belum aktif. Klik tombol "Minta Izin Storage" di Home.', 4000);
       }
