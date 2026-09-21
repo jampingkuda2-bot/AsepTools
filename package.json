@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "AsepTools - All-in-one file editor untuk Android",
   "devDependencies": {
-    "@capacitor/cli": "^6.1.2"
+    "@capacitor/cli": "^5.7.0"
   },
   "dependencies": {
-    "@capacitor/core": "^6.1.2",
-    "@capacitor/android": "^6.1.2",
-    "@capacitor/filesystem": "^6.0.1"
+    "@capacitor/core": "^5.7.0",
+    "@capacitor/android": "^5.7.0",
+    "@capacitor/filesystem": "^5.2.1"
   }
 }
