@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>AsepTools</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<section id="home" class="page active">
+  <div class="home-header">
+    <h1>?? AsepTools</h1>
+    <p>All-in-one file editor</p>
+  </div>
+  <div class="grid">
+    <button class="card" onclick="openFileManager()">
+      <span class="icon">?</span><span class="label">File Manager</span>
+    </button>
+    <button class="card" onclick="openTextEditor()">
+      <span class="icon">?</span><span class="label">Text Editor</span>
+    </button>
+    <button class="card" onclick="openPdfPicker()">
+      <span class="icon">?</span><span class="label">PDF Viewer</span>
+    </button>
+    <button class="card" disabled style="opacity:.4">
+      <span class="icon">?</span><span class="label">Spreadsheet<br><small>Tahap 3</small></span>
+    </button>
+    <button class="card" disabled style="opacity:.4">
+      <span class="icon">?</span><span class="label">Word Editor<br><small>Tahap 4</small></span>
+    </button>
+    <button class="card" disabled style="opacity:.4">
+      <span class="icon">?</span><span class="label">PDF Tools<br><small>Tahap 2</small></span>
+    </button>
+  </div>
+  <div class="home-footer">
+    <button class="btn-secondary" onclick="requestPermissions()">? Minta Izin Storage</button>
+  </div>
+</section>
+
+<section id="filemanager" class="page">
+  <header class="tool-header">
+    <button onclick="goHome()">?</button>
+    <h2>File Manager</h2>
+    <button class="btn-icon" onclick="showFileMenu()">?</button>
+  </header>
+  <div class="path-bar">
+    <input type="text" id="current-path" readonly value="/storage/emulated/0">
+    <button onclick="goUp()">?</button>
+  </div>
+  <div class="search-bar">
+    <input type="text" id="file-search" placeholder="Cari file..." oninput="filterFiles()">
+    <select id="file-sort" onchange="loadDir(currentPath)">
+      <option value="name">Nama</option>
+      <option value="date">Tanggal</option>
+      <option value="size">Ukuran</option>
+    </select>
+  </div>
+  <div id="file-list" class="file-list"></div>
+</section>
+
+<section id="texteditor" class="page">
+  <header class="tool-header">
+    <button onclick="closeTextEditor()">?</button>
+    <h2 id="editor-title">Text Editor</h2>
+    <button class="btn-icon" onclick="saveTextFile()">?</button>
+  </header>
+  <div class="editor-toolbar">
+    <button onclick="editorFind()">? Cari</button>
+    <button onclick="adjustFont(-1)">A-</button>
+    <button onclick="adjustFont(1)">A+</button>
+    <button onclick="toggleWrap()">? Wrap</button>
+    <span id="editor-status">Baru</span>
+  </div>
+  <div class="editor-container">
+    <div id="line-numbers" class="line-numbers">1</div>
+    <textarea id="editor-area" spellcheck="false" placeholder="Mulai tulis di sini..."></textarea>
+  </div>
+</section>
+
+<section id="pdfviewer" class="page">
+  <header class="tool-header">
+    <button onclick="closePdfViewer()">?</button>
+    <h2 id="pdf-title">PDF Viewer</h2>
+  </header>
+  <div class="pdf-toolbar">
+    <button onclick="pdfPrev()">?</button>
+    <span id="pdf-page-info">- / -</span>
+    <button onclick="pdfNext()">?</button>
+    <button onclick="pdfZoom(-0.2)">?</button>
+    <span id="pdf-zoom-info">100%</span>
+    <button onclick="pdfZoom(0.2)">+</button>
+  </div>
+  <div class="pdf-canvas-container">
+    <canvas id="pdf-canvas"></canvas>
+  </div>
+</section>
+
+<div id="picker-modal" class="modal hidden">
+  <div class="modal-content">
+    <header class="modal-header">
+      <h3 id="picker-title">Pilih File</h3>
+      <button onclick="closePicker()">×</button>
+    </header>
+    <div class="path-bar">
+      <input type="text" id="picker-path" readonly value="/storage/emulated/0">
+      <button onclick="pickerGoUp()">?</button>
+    </div>
+    <div id="picker-list" class="file-list"></div>
+  </div>
+</div>
+
+<script src="lib/pdf.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
