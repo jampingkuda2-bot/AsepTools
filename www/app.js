@@ -17,8 +17,9 @@ function toast(msg,dur=2200){
 }
 
 /* ================= CAPACITOR FILESYSTEM ================= */
+function toRel(p){ if(!p) return ''; if(p === '/storage/emulated/0') return ''; if(p.indexOf('/storage/emulated/0/') === 0) return p.substring(20); return p; }
 function getFS(){ return window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Filesystem; }
-const DIR_EXT = 'EXTERNAL';
+const DIR_EXT = 'EXTERNAL_STORAGE';
 const ENC_UTF8 = 'utf8';
 
 async function requestPermissions(){
@@ -53,7 +54,7 @@ async function loadDir(path){
   list.innerHTML = '<div class="loading"><div class="spinner"></div><br>Memuat...</div>';
   try{
     const result = await getFS().readdir({
-      path: path,
+      path: toRel(path),
       directory: DIR_EXT
     });
     currentPath = path;
@@ -64,7 +65,7 @@ async function loadDir(path){
       let size = 0, mtime = 0;
       try{
         const stat = await getFS().stat({
-          path: path + '/' + f.name,
+          path: toRel(path + '/' + f.name),
           directory: DIR_EXT
         });
         size = stat.size || 0;
@@ -194,8 +195,8 @@ async function renameItem(name, type){
   if(!newName || newName === name) return;
   try{
     await getFS().rename({
-      from: currentPath + '/' + name,
-      to: currentPath + '/' + newName,
+      from: toRel(currentPath + '/' + name),
+      to: toRel(currentPath + '/' + newName),
       directory: DIR_EXT
     });
     toast('? Berhasil di-rename');
@@ -208,9 +209,9 @@ async function deleteItem(name, type){
   try{
     const path = currentPath + '/' + name;
     if(type === 'directory'){
-      await getFS().rmdir({ path, directory: DIR_EXT, recursive: true });
+      await getFS().rmdir({ path: toRel(path), directory: DIR_EXT, recursive: true });
     }else{
-      await getFS().deleteFile({ path, directory: DIR_EXT });
+      await getFS().deleteFile({ path: toRel(path), directory: DIR_EXT });
     }
     toast('?? Dihapus');
     await loadDir(currentPath);
@@ -220,7 +221,7 @@ async function deleteItem(name, type){
 async function showInfo(name){
   try{
     const stat = await getFS().stat({
-      path: currentPath + '/' + name,
+      path: toRel(currentPath + '/' + name),
       directory: DIR_EXT
     });
     alert('Nama: '+name+'\nUkuran: '+formatSize(stat.size)+'\nTipe: '+stat.type+'\nTanggal: '+(stat.mtime ? new Date(stat.mtime).toLocaleString('id-ID') : '-')+'\nPath: '+stat.uri);
@@ -239,7 +240,7 @@ async function createFolder(){
   if(!name) return;
   try{
     await getFS().mkdir({
-      path: currentPath + '/' + name,
+      path: toRel(currentPath + '/' + name),
       directory: DIR_EXT,
       recursive: true
     });
@@ -253,7 +254,7 @@ async function createTextFile(){
   if(!name) return;
   try{
     await getFS().writeFile({
-      path: currentPath + '/' + name,
+      path: toRel(currentPath + '/' + name),
       data: '',
       directory: DIR_EXT,
       encoding: ENC_UTF8
@@ -288,7 +289,7 @@ async function loadFileContent(path){
   area.value = 'Memuat...';
   try{
     const res = await getFS().readFile({
-      path: path,
+      path: toRel(path),
       directory: DIR_EXT,
       encoding: ENC_UTF8
     });
@@ -315,7 +316,7 @@ async function saveTextFile(){
 
   try{
     await getFS().writeFile({
-      path: path,
+      path: toRel(path),
       data: content,
       directory: DIR_EXT,
       encoding: ENC_UTF8
@@ -392,7 +393,7 @@ async function openPdf(path, name){
   document.getElementById('pdf-page-info').textContent = 'Memuat...';
   try{
     const res = await getFS().readFile({
-      path: path,
+      path: toRel(path),
       directory: DIR_EXT
     });
     let data;
@@ -466,7 +467,7 @@ async function loadPickerDir(path){
   list.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
   try{
     const res = await getFS().readdir({
-      path: path, directory: DIR_EXT
+      path: toRel(path), directory: DIR_EXT
     });
     pickerPath = path;
     document.getElementById('picker-path').value = path;
