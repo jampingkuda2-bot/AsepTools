@@ -37,10 +37,24 @@ jobs:
 
       - name: Inject permission ke AndroidManifest
         run: |
-          MANIFEST="android/app/src/main/AndroidManifest.xml"
-          sed -i 's|</manifest>|    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />\n    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />\n    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />\n    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />\n    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />\n    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />\n</manifest>|' $MANIFEST
-          echo "=== Cek AndroidManifest ==="
-          grep -A2 "uses-permission" $MANIFEST || true
+          python3 << 'PYEOF'
+          path = 'android/app/src/main/AndroidManifest.xml'
+          with open(path) as f:
+              content = f.read()
+          perms = '''    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+              <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+              <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+              <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+              <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+              <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+          '''
+          content = content.replace('</manifest>', perms + '</manifest>')
+          with open(path, 'w') as f:
+              f.write(content)
+          print('Permissions injected')
+          PYEOF
+          echo "=== Verifikasi Manifest ==="
+          grep "uses-permission" android/app/src/main/AndroidManifest.xml
 
       - name: Sync web assets
         run: npx cap sync

@@ -521,6 +521,19 @@ function escapeHtml(s){
 function escapeAttr(s){ return String(s).replace(/'/g,"\\'"); }
 
 /* ================= INIT ================= */
+
+function openAllFilesSettings(){
+  try{
+    const intent = 'intent:#Intent;action=android.settings.MANAGE_APP_ALL_FILES_ACCESS_PERMISSION;package=com.asep.tools;end';
+    window.location.href = intent;
+    setTimeout(function(){
+      toast('Kalau tidak terbuka, buka manual: Settings > Apps > Special access > All files access > AsepTools', 6000);
+    }, 1500);
+  }catch(e){
+    toast('Buka manual: Settings > Apps > Special access > All files access > AsepTools', 6000);
+  }
+}
+
 window.addEventListener('load', function(){
   updateLineNumbers();
   if(getFS()){
