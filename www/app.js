@@ -18,7 +18,7 @@ function toast(msg,dur=2200){
 
 /* ================= CAPACITOR FILESYSTEM ================= */
 function getFS(){ return window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Filesystem; }
-const DIR_EXT = 'EXTERNAL_STORAGE';
+const DIR_EXT = 'EXTERNAL';
 const ENC_UTF8 = 'utf8';
 
 async function requestPermissions(){

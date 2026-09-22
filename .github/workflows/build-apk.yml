@@ -53,7 +53,6 @@ jobs:
               f.write(content)
           print('Permissions injected')
           PYEOF
-          echo "=== Verifikasi Manifest ==="
           grep "uses-permission" android/app/src/main/AndroidManifest.xml
 
       - name: Sync web assets
